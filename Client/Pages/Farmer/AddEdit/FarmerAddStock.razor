@@ -1,0 +1,88 @@
+﻿@page "/product/addstock/{ProductId:int}/{FarmerId:int}"
+@using FarmCentral.Shared.Models;
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@using System.ComponentModel.DataAnnotations
+@inject ISnackbar Snackbar
+@using System.Globalization
+
+<MudDialog>
+    <DialogContent>
+        <EditForm Model="@product" OnValidSubmit="SaveStock">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <MudItem xs="12" sm="24">
+                    <MudCard>
+                        <MudCardContent>
+
+                            <MudTextField Label="Product Name"
+                                          @bind-Value="product.Name" For="@(() => product.Name)" />
+                            <MudNumericField Label="Price" Class="mt-3" Min="0" HideSpinButtons="true" Culture="@_zar"
+                                             @bind-Value="product.Price" For="@(() => product.Price)" />
+                            <MudNumericField Label="Quantity" Class="mt-3" Min="0" HideSpinButtons="true"
+                                             @bind-Value="Quantity" For="@(() => Quantity)" />
+
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudPaper Class="d-flex flex-column flex-grow-1 gap-4" Elevation="0">
+                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">@Title</MudButton>
+                                <MudButton ButtonType="ButtonType.Reset" OnClick="Cancel" Variant="Variant.Filled" Color="Color.Secondary">Cancel</MudButton>
+                            </MudPaper>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
+
+
+
+@code {
+    [Parameter]
+    public int ProductId { get; set; }
+    [Parameter]
+    public int FarmerId { get; set; }
+    [Parameter]
+    public int ProductTypeID { get; set; }
+    protected string Title { get; set; } = "Add";
+    protected Product product { get; set; } = new Product();
+    protected Stock stock { get; set; } = new Stock();
+
+    public int Quantity { get; set; } = 1;
+
+    protected List<ProductType> productTypes { get; set; } = new List<ProductType>();
+    public CultureInfo _zar = new CultureInfo("sa-ZAR");
+    public string productTypeSelected;
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch the product types from the API and assign them to the productTypes property
+        productTypes = await HttpClient.GetFromJsonAsync<List<ProductType>>("api/ProductType");
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Title = "Edit";
+        product = await HttpClient.GetFromJsonAsync<Product>($"api/Product/{ProductId}");
+    }
+
+    protected async Task SaveStock()
+    {
+        Stock stock = new Stock()
+        {
+                FarmerId = FarmerId,
+                ProductId = ProductId,
+                Quantity = Quantity,
+                Date = DateTime.Now,        
+        };
+        await HttpClient.PostAsJsonAsync("api/Stock", stock);        
+        Snackbar.Add("Added Stock", Severity.Success);
+    }
+
+
+}

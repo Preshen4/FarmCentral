@@ -1,0 +1,64 @@
+﻿@using FarmCentral.Client.Pages.Farmer.AddEdit;
+@using FarmCentral.Shared.Models;
+@inject HttpClient HttpClient
+@page "/farmerproducttypeindex"
+@inject IDialogService DialogService
+
+<PageTitle>Product Details</PageTitle>
+
+
+@if (producttypes.Count <= 0)
+{
+    <MudText Typo="Typo.h3" GutterBottom="true">Farmer Product Type Details are Loading...</MudText>
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+}
+else
+{
+    <MudTable Items="@producttypes" Hover="true" Breakpoint="Breakpoint.Sm" SortLabel="Sort By" FixedHeader="true" Bordered="true" Filter="new Func<ProductType,bool>(FilterFunc1)">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Products</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudFab OnClick="AddDialog" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Product, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+        </PagerContent>
+    </MudTable>
+
+}
+
+@code {
+    // List of all Products
+    protected List<ProductType> producttypes = new();
+    private string searchString1 = "";
+
+    private void AddDialog()
+    {
+        DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
+        DialogService.Show<FarmerAddProductType>("Add Product Type", dialogOptions);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        producttypes = await HttpClient.GetFromJsonAsync<List<ProductType>>("api/ProductType");
+    }
+    private bool FilterFunc1(ProductType producttypes) => FilterFunc(producttypes, searchString1);
+
+    private bool FilterFunc(ProductType producttypes, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (producttypes.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+
+}

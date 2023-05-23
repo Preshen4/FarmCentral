@@ -1,0 +1,89 @@
+﻿@using FarmCentral.Client.Pages.Employee.AddEdit;
+@using FarmCentral.Shared.Models;
+@inject HttpClient HttpClient
+@page "/stockdetails"
+@inject IDialogService DialogService
+
+<PageTitle>Farmer Details</PageTitle>
+
+
+@if (stocks.Count <= 0)
+{
+    <MudText Typo="Typo.h3" GutterBottom="true">Farmer Stocks are Loading...</MudText>
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+}
+else
+{
+    <MudTable Items="@stocks" Hover="true" Breakpoint="Breakpoint.Sm" SortLabel="Sort By" FixedHeader="true" Bordered="true" Filter="new Func<Stock,bool>(FilterFunc1)">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Farmers</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudFab OnClick="AddDialog" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add">
+
+            </MudFab>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Stock, object>(x=>x.Farmer.UserName)">Farmer</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Stock, object>(x=>x.Product.Name)">Product</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Stock, object>(x=>x.Product.ProductType.Name)">Product Type</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Stock, object>(x=>x.Quantity)">Quantity</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Stock, object>(x=>x.Date)">Date</MudTableSortLabel></MudTh>
+            <MudTh>Action</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Farmer">@context.Farmer.UserName</MudTd>
+            <MudTd DataLabel="Product">@context.Product.Name</MudTd>
+            <MudTd DataLabel="Product Type">@context.Product.ProductType.Name</MudTd>
+            <MudTd DataLabel="Quantity">@context.Quantity</MudTd>
+            <MudTd DataLabel="Date">@context.Date</MudTd>
+            <MudTd DataLabel="">
+                <MudFab OnClick="(args) => EditDialog(context.StockId)" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" />
+                <MudFab Href="@($"/stock/delete/{context.StockId}")" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Delete" Size="Size.Small" />
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+        </PagerContent>
+    </MudTable>
+
+}
+
+@code {
+    // List of all farmers
+    protected List<Stock> stocks = new();
+    private string searchString1 = "";
+
+    private void EditDialog(int id)
+    {
+        DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
+        DialogParameters parameters = new DialogParameters();
+        parameters.Add("FarmerId", id);
+        DialogService.Show<EmployeeAddFarmer>("Edit Employee", parameters, dialogOptions);
+    }
+    private void AddDialog()
+    {
+        DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
+        DialogService.Show<EmployeeAddFarmer>("Add Employee", dialogOptions);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        stocks = await HttpClient.GetFromJsonAsync<List<Stock>>("api/Stock");
+
+    }
+    private bool FilterFunc1(Stock stocks) => FilterFunc(stocks, searchString1);
+
+    private bool FilterFunc(Stock stocks, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (stocks.Date.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (stocks.Product.ProductType.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+
+}

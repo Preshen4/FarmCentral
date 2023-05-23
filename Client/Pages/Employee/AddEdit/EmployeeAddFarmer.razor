@@ -1,0 +1,83 @@
+﻿@page "/farmer/add"
+@page "/farmer/edit/{FarmerId:int}"
+@using FarmCentral.Shared.Models;
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@using System.ComponentModel.DataAnnotations
+@inject ISnackbar Snackbar
+
+<PageTitle>Add Farmer</PageTitle>
+
+<MudDialog>
+    <DialogContent>
+        <EditForm Model="@farmer" OnValidSubmit="SaveFarmer">
+            <DataAnnotationsValidator />
+            <MudGrid nchorOrigin="Origin.BottomCenter">
+                <MudItem xs="12" sm="24">
+                    <MudCard>
+                        <MudCardContent>
+                            <MudTextField Label="First name"
+                                          @bind-Value="farmer.FirstName" For="@(() => farmer.FirstName)" />
+                            <MudTextField Label="Surname" Class="mt-3"
+                                          @bind-Value="farmer.Surname" For="@(() => farmer.Surname)" />
+                            <MudTextField Label="Username" Class="mt-3"
+                                          @bind-Value="farmer.UserName" For="@(() => farmer.UserName)" />
+                            <MudTextField Label="Password" HelperText="Enter a strong password" Class="mt-3"
+                                          @bind-Value="farmer.Password" For="@(() => farmer.Password)" InputType="InputType.Password" />
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudPaper Class="d-flex flex-column flex-grow-1 gap-4" Elevation="0">
+                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">@Title</MudButton>
+                                <MudButton OnClick="Cancel" Variant="Variant.Filled" Color="Color.Secondary">Cancel</MudButton>
+                            </MudPaper>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </DialogContent>
+    
+</MudDialog>
+
+
+@code {
+    [Parameter]
+    public int FarmerId { get; set; }
+    protected string Title { get; set; } = "Add";
+    protected Farmer farmer { get; set; } = new Farmer();
+    [CascadingParameter] 
+    MudDialogInstance MudDialog { get; set; }
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (FarmerId != 0)
+        {
+            Title = "Edit";
+            farmer = await HttpClient.GetFromJsonAsync<Farmer>($"api/Farmer/{FarmerId}");
+        }
+    }
+
+    protected async Task SaveFarmer()
+    {
+        if (FarmerId !=0)
+        {
+            await HttpClient.PutAsJsonAsync("api/Farmer", farmer);
+            Snackbar.Add("Updated Farmer", Severity.Success);
+        }
+        else
+        {
+            await HttpClient.PostAsJsonAsync("api/Farmer", farmer);
+            Snackbar.Add("Added Farmer", Severity.Success);
+        }
+
+        HomePage();
+    }
+
+    public void HomePage()
+    {
+        NavigationManager.NavigateTo("farmerdetails");
+    }
+
+}

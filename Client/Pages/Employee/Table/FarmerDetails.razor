@@ -1,0 +1,99 @@
+﻿@using FarmCentral.Client.Pages.Employee.AddEdit;
+@using FarmCentral.Client.Pages.Employee.Delete;
+@using FarmCentral.Shared.Models;
+@inject HttpClient HttpClient
+@page "/farmerdetails"
+@inject IDialogService DialogService
+
+<PageTitle>Farmer Details</PageTitle>
+
+
+@if (farmers.Count <= 0)
+{
+    <MudText Typo="Typo.h3" GutterBottom="true">Farmer Details are Loading...</MudText>
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+}
+else
+{
+    <MudTable Items="@farmers" Hover="true" Breakpoint="Breakpoint.Sm" SortLabel="Sort By" FixedHeader="true" Bordered="true" Filter="new Func<Farmer,bool>(FilterFunc1)">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Farmers</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudFab OnClick="AddDialog" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add">
+                    
+            </MudFab>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>FarmerID</MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Farmer, object>(x=>x.FirstName)">First Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Farmer, object>(x=>x.Surname)">Surname</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Farmer, object>(x=>x.UserName)">Username</MudTableSortLabel></MudTh>
+            <MudTh>Action</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="FarmerId">@context.FarmerId</MudTd>
+            <MudTd DataLabel="FirstName">@context.FirstName</MudTd>
+            <MudTd DataLabel="Surname">@context.Surname</MudTd>
+            <MudTd DataLabel="UserName">@context.UserName</MudTd>
+            <MudTd DataLabel="">
+                <MudFab OnClick="(args) => EditDialog(context.FarmerId)" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" />
+                <MudFab OnClick="(args) => DeleteDialog(context.FarmerId)" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Delete" Size="Size.Small" />
+
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+        </PagerContent>
+    </MudTable>
+
+}
+
+@code {
+    // List of all farmers 
+    protected List<Farmer> farmers = new();
+    private string searchString1 = "";
+
+    private void EditDialog(int id)
+    {
+        DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
+        DialogParameters parameters = new DialogParameters();
+        parameters.Add("FarmerId", id);
+        DialogService.Show<EmployeeAddFarmer>("Edit Employee",parameters, dialogOptions);        
+    }
+    private void AddDialog()
+    {
+        DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
+        DialogService.Show<EmployeeAddFarmer>("Add Employee", dialogOptions);
+    }
+
+    private void DeleteDialog(int id)
+    {
+        DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
+        DialogParameters paramerters = new DialogParameters();
+        paramerters.Add("FarmerId", id);
+        DialogService.Show<EmployeeDeleteFarmer>("Delete Employee",paramerters, dialogOptions);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        farmers = await HttpClient.GetFromJsonAsync<List<Farmer>>("api/Farmer");
+
+    }
+    private bool FilterFunc1(Farmer farmer) => FilterFunc(farmer, searchString1);
+
+    private bool FilterFunc(Farmer farmer, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (farmer.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (farmer.Surname.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (farmer.UserName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+
+}

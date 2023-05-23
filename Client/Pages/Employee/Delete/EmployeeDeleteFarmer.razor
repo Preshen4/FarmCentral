@@ -1,0 +1,64 @@
+﻿@page "/farmer/delete/{FarmerId:int}"
+@using FarmCentral.Shared.Models
+@inject HttpClient HttpClient
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete Farmer</PageTitle>
+
+<MudDialog>
+    <DialogContent>
+        <MudSimpleTable Style="overflow-x: auto;">
+            <tbody>
+                <tr>
+                    <td><strong>FirstName</strong></td>
+                    <td><em>@farmer.FirstName</em></td>
+                </tr>
+                <tr>
+                    <td><strong>Surname</strong></td>
+                    <td><em>@farmer.Surname</em></td>
+                </tr>
+                <tr>
+                    <td><strong>Username</strong></td>
+                    <td><em>@farmer.UserName</em></td>
+                </tr>
+
+            </tbody>
+        </MudSimpleTable>
+        <br />
+        <br />
+        <MudPaper Class="d-flex flex-column flex-grow-1 gap-4" Elevation="0">
+            <MudButton @onclick="@(() => RemoveFarmer(farmer.FarmerId))" Variant="Variant.Filled" Color="Color.Primary">Delete</MudButton>
+            <MudButton @onclick="@(() => HomePage())" Variant="Variant.Filled" Color="Color.Secondary">Cancel</MudButton>
+        </MudPaper>
+    </DialogContent>
+</MudDialog>
+
+
+
+@code {
+
+    [Parameter]
+    public int FarmerId { get; set; }
+
+    //Supplier Object
+    protected Farmer farmer = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        farmer = await HttpClient.GetFromJsonAsync<Farmer>($"api/Farmer/{FarmerId}");
+    }
+
+    protected async Task RemoveFarmer(int farmerId)
+    {
+        await HttpClient.DeleteAsync($"api/Farmer/{FarmerId}");
+        Snackbar.Add("Deleted Farmer", Severity.Success);
+        HomePage();
+
+    }
+
+    public void HomePage()
+    {
+        NavigationManager.NavigateTo("/farmerdetails");
+    }
+}

@@ -1,0 +1,44 @@
+﻿@page "/login"
+@inject NavigationManager NavigationManager
+
+<MudThemeProvider Theme="@theme">
+    <MudCard Class="login-card">
+        <MudCardContent>
+            <MudTypography Variant="TypoVariant.H4" Class="login-title">
+                Login
+            </MudTypography>
+
+            <MudTextField @bind-Value="@username" Label="Username" Class="login-input" />
+
+            <MudTextField @bind-Value="@password" Label="Password" Type="InputType.Password" Class="login-input" />
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="login-button" OnClick="LoginUser">
+                Sign In
+            </MudButton>
+        </MudCardContent>
+    </MudCard>
+</MudThemeProvider>
+
+@code {
+    private string username;
+    private string password;
+
+    private MudTheme theme = new MudTheme
+    {
+        Palette = new Palette
+        {
+            Primary = Colors.Blue.Accent1,
+        },
+    };
+
+    private void LoginUser()
+    {
+        // Perform login logic here
+        // For example, you can validate the username and password
+        // and redirect the user to the dashboard if successful
+        if (username == "admin" && password == "password")
+        {
+            NavigationManager.NavigateTo("/dashboard");
+        }
+    }
+}

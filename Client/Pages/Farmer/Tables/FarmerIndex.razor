@@ -1,0 +1,107 @@
+﻿@using FarmCentral.Client.Pages.Farmer.AddEdit;
+@using FarmCentral.Shared.Models;
+@inject HttpClient HttpClient
+@page "/farmerindex"
+@inject IDialogService DialogService
+
+<PageTitle>Product Details</PageTitle>
+
+
+@if (products.Count <= 0)
+{
+    <MudText Typo="Typo.h3" GutterBottom="true">Farmer Product Details are Loading...</MudText>
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+}
+else
+{
+    <MudTable Items="@products" Hover="true" Breakpoint="Breakpoint.Sm" SortLabel="Sort By" FixedHeader="true" Bordered="true" Filter="new Func<Product,bool>(FilterFunc1)">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Products</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudFab OnClick="(args) => AddDialog(1)" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Product, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Product, object>(x=>x.ProductType.Name)">Product Type</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Product, object>(x=>x.Price)">Price</MudTableSortLabel></MudTh>
+            <MudTh>Action</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Product Type">@context.ProductType.Name</MudTd>
+            <MudTd DataLabel="Price">@context.Price</MudTd>
+            <MudTd DataLabel="">
+                <MudFab OnClick="(args) => EditDialog(1)" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" />
+                <MudFab OnClick="(args) => AddStockDialog(1,context.ProductId)" Color="Color.Success" StartIcon="@Icons.Material.Filled.AttachMoney" Size="Size.Small" />
+                <MudFab OnClick="(args) => DeleteDialog(context.ProductId)" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Delete" Size="Size.Small" />
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+        </PagerContent>
+    </MudTable>
+
+}
+
+@code {
+    // List of all Products
+    protected List<Product> products = new();
+    private string searchString1 = "";
+
+    private void AddStockDialog(int farmerId, int productId)
+    {
+        DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
+        DialogParameters parameters = new DialogParameters();
+        parameters.Add("ProductId", productId);
+        parameters.Add("FarmerId", farmerId);
+        DialogService.Show<FarmerAddStock>("Supply Product", parameters, dialogOptions);
+    
+    }
+
+    private void DeleteDialog(int id)
+    {
+        /*Add Delete Page*/
+        DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
+        DialogParameters parameters = new DialogParameters();
+        parameters.Add("ProductId", id);
+        DialogService.Show<FarmerAddProduct>("Edit Product", parameters, dialogOptions);
+    }
+
+    private void EditDialog(int id)
+    {
+        DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
+        DialogParameters parameters = new DialogParameters();
+        parameters.Add("FarmerId", id);
+        DialogService.Show<FarmerAddProduct>("Edit Product", parameters, dialogOptions);
+    }
+
+    private void AddDialog(int id)
+    {
+        DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
+        DialogParameters parameters = new DialogParameters();
+        parameters.Add("FarmerId", id);
+        DialogService.Show<FarmerAddProduct>("Add Product", parameters,dialogOptions);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await HttpClient.GetFromJsonAsync<List<Product>>($"api/Product/farmer/{1}");
+    }
+    private bool FilterFunc1(Product product) => FilterFunc(product, searchString1);
+
+    private bool FilterFunc(Product product, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (product.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (product.ProductType.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (product.Price.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+
+}
