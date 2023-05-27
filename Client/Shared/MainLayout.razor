@@ -6,12 +6,14 @@
 
 <MudLayout>
     <MudAppBar Elevation="0">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" 
+        OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
         <MudToggleIconButton @bind-Toggled="@_themeProvider.IsDarkMode"
                              Icon="@Icons.Material.Filled.LightMode" Color="@Color.Error"
                              Title="Off" ToggledIcon="@Icons.Material.Filled.DarkMode"
                              ToggledColor="@Color.Success" ToggledTitle="On" />
+        <LoginLogoutButton />
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>

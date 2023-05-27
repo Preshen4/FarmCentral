@@ -1,63 +1,8 @@
 ﻿@page "/"
-@using System.Text.RegularExpressions
-@using System.ComponentModel.DataAnnotations
 
-<AuthorizeView>
-<Authorized>
-        <p>You're authorized!</p>
-    </Authorized>
-    <NotAuthorized>
-        <p>You're not authorized!</p>
-    </NotAuthorized>
-</AuthorizeView>
 <PageTitle>Index</PageTitle>
 
-<MudGrid>
-    <MudItem>
-        <MudPaper Class="pa-4">
-            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-                <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!" />
-                <MudTextField T="string" Label="Password" @ref="pwField1"
-                              InputType="InputType.Password"
-                              Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
-                              RequiredError="Password is required!" />
-            </MudForm>
-        </MudPaper>
-        <MudPaper Class="pa-4 mt-4">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(()=>form.Validate())">Validate</MudButton>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+<h1>Hello, world!</h1>
 
+Welcome to your new app.
 
-@code {
-    bool success;
-    string[] errors = { };
-    MudTextField<string> pwField1;
-    MudForm form;
-
-    private IEnumerable<string> PasswordStrength(string pw)
-    {
-        if (string.IsNullOrWhiteSpace(pw))
-        {
-            yield return "Password is required!";
-            yield break;
-        }
-        if (pw.Length < 8)
-            yield return "Password must be at least of length 8";
-        if (!Regex.IsMatch(pw, @"[A-Z]"))
-            yield return "Password must contain at least one capital letter";
-        if (!Regex.IsMatch(pw, @"[a-z]"))
-            yield return "Password must contain at least one lowercase letter";
-        if (!Regex.IsMatch(pw, @"[0-9]"))
-            yield return "Password must contain at least one digit";
-    }
-
-    private string PasswordMatch(string arg)
-    {
-        if (pwField1.Value != arg)
-            return "Passwords don't match";
-        return null;
-    }
-
-}
