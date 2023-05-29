@@ -1,10 +1,9 @@
 ﻿using FarmCentral.Shared.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FarmCentral.Server.Data.Context
 {
-    public partial class FarmCentralDBContext : IdentityDbContext
+    public partial class FarmCentralDBContext : DbContext
     {
         public FarmCentralDBContext()
         {

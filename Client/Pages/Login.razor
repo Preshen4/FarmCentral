@@ -44,10 +44,9 @@
     UserLoginDto userLoginDto = UserLoginDto.Instance;
     async Task HandleLogin()
     {
+
+        userLoginDto.ID = await HttpClient.GetFromJsonAsync<int>($"api/auth/{SelectedOption}/{Username}/{Password}");
         userLoginDto.Role = SelectedOption;
-        userLoginDto.Username = Username;
-        userLoginDto.Password = Password;
-        var x = await HttpClient.GetFromJsonAsync<UserLoginDto>($"api/auth/{SelectedOption}/{Username}/{Password}");
     }
 
 }

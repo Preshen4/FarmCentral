@@ -99,8 +99,7 @@ namespace FarmCentral.Server.Data.Repositories.Employee
         {
             try
             {
-                var employees = _dbContext.Employees.ToList();
-                var employee = employees.FirstOrDefault(e => e.UserName == username && e.Password == password);
+                var employee = _dbContext.Employees.FirstOrDefault(e => e.UserName == username && e.Password == password);
                 if (employee != null)
                 {
                     return employee;

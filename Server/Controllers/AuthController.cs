@@ -1,6 +1,5 @@
 ﻿using FarmCentral.Server.Data.Repositories.Employee;
 using FarmCentral.Server.Data.Repositories.Farmer;
-using FarmCentral.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FarmCentral.Server.Controllers
@@ -18,32 +17,26 @@ namespace FarmCentral.Server.Controllers
             this._farmerRepository = farmerRepository;
         }
 
-        [HttpGet("{role}")]
-        public async Task<ActionResult<string>> Login(string role)
+        [HttpGet("{role}" + "/" + "{username}" + "/" + "{password}")]
+        public async Task<ActionResult<int>> Login(string role, string username, string password)
         {
-            UserLoginDto _userLoginDto = UserLoginDto.Instance;
-
             if (role == "Farmer")
             {
-                var user = await _farmerRepository.LoginFarmer(_userLoginDto.Username, _userLoginDto.Password);
+                var user = await _farmerRepository.LoginFarmer(username, password);
                 if (user.FarmerId <= 0)
                 {
                     return NotFound("Wrong Details");
                 }
-                _userLoginDto.Role = "Farmer";
-                _userLoginDto.ID = user.FarmerId;
-                return Ok();
+                return Ok(user.FarmerId);
             }
             else if (role == "Employee")
             {
-                var user = await _employeeRepository.LoginEmployee(_userLoginDto.Username, _userLoginDto.Password);
+                var user = await _employeeRepository.LoginEmployee(username, password);
                 if (user.EmployeeId <= 0)
                 {
                     return NotFound("Wrong Details");
                 }
-                _userLoginDto.Role = "Employee";
-                _userLoginDto.ID = user.EmployeeId;
-                return Ok();
+                return Ok(user.EmployeeId);
             }
             else
             {

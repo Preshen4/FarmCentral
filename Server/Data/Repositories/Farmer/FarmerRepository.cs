@@ -99,8 +99,7 @@ namespace FarmCentral.Server.Data.Repositories.Farmer
         {
             try
             {
-                var farmers = _dbContext.Farmers.ToList();
-                var farmer = farmers.FirstOrDefault(f => f.UserName == username && f.Password == password);
+                var farmer = _dbContext.Farmers.FirstOrDefault(f => f.UserName == username && f.Password == password);
                 if (farmer != null)
                 {
                     return farmer;
