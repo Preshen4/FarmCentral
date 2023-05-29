@@ -1,25 +1,32 @@
-﻿<MudNavMenu>
-    <MudNavLink 
-        Href="farmerdetails" 
-        Match="NavLinkMatch.Prefix" 
-        Icon="@Icons.Material.Filled.People">
-        Farmer Details
-    </MudNavLink>
-    <MudNavLink 
-        Href="farmerindex" 
-        Match="NavLinkMatch.Prefix" 
-        Icon="@Icons.Material.Filled.Home">
-        Farmer Products</MudNavLink>
-    <MudNavLink 
-        Href="farmerproducttypeindex" 
-        Match="NavLinkMatch.Prefix" 
-        Icon="@Icons.Material.Filled.Flatware">
-        Farmer Product Types
-    </MudNavLink>
-    <MudNavLink 
-        Href="stockdetails" 
-        Match="NavLinkMatch.Prefix" 
-        Icon="@Icons.Material.Filled.ShoppingCart">
-        Store Stock
-    </MudNavLink>
+﻿@using FarmCentral.Shared;
+
+<MudNavMenu>
+    @if (UserLoginDto.Instance.Role == "Employee")
+    {
+        <MudNavLink Href="farmerdetails"
+                Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.People">
+            Farmer Details
+        </MudNavLink>
+        <MudNavLink Href="stockdetails"
+                Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.ShoppingCart">
+            Store Stock
+        </MudNavLink>
+    }
+    @if (UserLoginDto.Instance.Role == "Farmer")
+    {
+        <MudNavLink Href="farmerindex"
+                Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.Home">
+            Farmer Products
+        </MudNavLink>
+        <MudNavLink Href="farmerproducttypeindex"
+                Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.Flatware">
+            Farmer Product Types
+        </MudNavLink>
+    }
+
 </MudNavMenu>
+

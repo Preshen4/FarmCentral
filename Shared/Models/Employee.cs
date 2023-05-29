@@ -2,6 +2,7 @@
 
 public partial class Employee
 {
+    [System.ComponentModel.DataAnnotations.Key]
     public int EmployeeId { get; set; }
 
     public string? FirstName { get; set; }

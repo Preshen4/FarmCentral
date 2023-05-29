@@ -2,6 +2,7 @@
 
 public partial class Farmer
 {
+    [System.ComponentModel.DataAnnotations.Key]
     public int FarmerId { get; set; }
 
     public string? FirstName { get; set; }

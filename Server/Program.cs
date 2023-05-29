@@ -1,4 +1,4 @@
-﻿using FarmCentral.Server.Data.Context;
+using FarmCentral.Server.Data.Context;
 using FarmCentral.Server.Data.Repositories.Employee;
 using FarmCentral.Server.Data.Repositories.Farmer;
 using FarmCentral.Server.Data.Repositories.Product;
@@ -19,6 +19,7 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<FarmCentralDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FarmCentralConnection")));
+
 // Add the following line inside the CreateHostBuilder method
 
 
@@ -56,5 +57,6 @@ app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+app.UseAuthentication(); ;
 
 app.Run();

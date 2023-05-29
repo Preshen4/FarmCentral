@@ -95,6 +95,33 @@ namespace FarmCentral.Server.Data.Repositories.Farmer
             }
         }
 
+        public async Task<Shared.Models.Farmer> LoginFarmer(string username, string password)
+        {
+            try
+            {
+                var farmers = _dbContext.Farmers.ToList();
+                var farmer = farmers.FirstOrDefault(f => f.UserName == username && f.Password == password);
+                if (farmer != null)
+                {
+                    return farmer;
+                }
+                else
+                {
+                    throw new ArgumentNullException("Farmer does not exist");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw new Exception();
+            }
+            finally
+            {
+                _dbContext.SaveChanges();
+            }
+
+        }
+
         public async Task UpdateFarmer(Shared.Models.Farmer farmer)
         {
             try

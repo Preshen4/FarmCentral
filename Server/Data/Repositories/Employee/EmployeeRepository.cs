@@ -95,6 +95,32 @@ namespace FarmCentral.Server.Data.Repositories.Employee
             }
         }
 
+        public async Task<Shared.Models.Employee> LoginEmployee(string username, string password)
+        {
+            try
+            {
+                var employees = _dbContext.Employees.ToList();
+                var employee = employees.FirstOrDefault(e => e.UserName == username && e.Password == password);
+                if (employee != null)
+                {
+                    return employee;
+                }
+                else
+                {
+                    throw new ArgumentNullException("Employee does not exist");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Failed to find employee");
+            }
+            finally
+            {
+                _dbContext.SaveChanges();
+            }
+        }
+
         public async Task UpdateEmployee(Shared.Models.Employee employee)
         {
             try

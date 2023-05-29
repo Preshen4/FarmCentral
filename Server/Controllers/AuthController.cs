@@ -1,4 +1,6 @@
-﻿using FarmCentral.Shared;
+﻿using FarmCentral.Server.Data.Repositories.Employee;
+using FarmCentral.Server.Data.Repositories.Farmer;
+using FarmCentral.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FarmCentral.Server.Controllers
@@ -7,12 +9,46 @@ namespace FarmCentral.Server.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        [HttpPost]
-        public async Task<ActionResult<string>> Login(UserLoginDto request)
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IFarmerRepository _farmerRepository;
+
+        public AuthController(IEmployeeRepository employeeRepository, IFarmerRepository farmerRepository)
         {
-            string token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVG9ueSBTdGFyayIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Iklyb24gTWFuIiwiZXhwIjozMTY4NTQwMDAwfQ.IbVQa1lNYYOzwso69xYfsMOHnQfO3VLvVqV2SOXS7sTtyyZ8DEf5jmmwz2FGLJJvZnQKZuieHnmHkg7CGkDbvA";
-            return token;
+            this._employeeRepository = employeeRepository;
+            this._farmerRepository = farmerRepository;
         }
 
+        [HttpGet("{role}")]
+        public async Task<ActionResult<string>> Login(string role)
+        {
+            UserLoginDto _userLoginDto = UserLoginDto.Instance;
+
+            if (role == "Farmer")
+            {
+                var user = await _farmerRepository.LoginFarmer(_userLoginDto.Username, _userLoginDto.Password);
+                if (user.FarmerId <= 0)
+                {
+                    return NotFound("Wrong Details");
+                }
+                _userLoginDto.Role = "Farmer";
+                _userLoginDto.ID = user.FarmerId;
+                return Ok();
+            }
+            else if (role == "Employee")
+            {
+                var user = await _employeeRepository.LoginEmployee(_userLoginDto.Username, _userLoginDto.Password);
+                if (user.EmployeeId <= 0)
+                {
+                    return NotFound("Wrong Details");
+                }
+                _userLoginDto.Role = "Employee";
+                _userLoginDto.ID = user.EmployeeId;
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("Invalid Role");
+            }
+        }
     }
 }

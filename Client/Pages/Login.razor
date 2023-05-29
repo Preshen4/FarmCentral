@@ -2,8 +2,7 @@
 @using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
 @using FarmCentral.Shared;
-@inject HttpClient Http
-@inject AuthenticationStateProvider AuthStateProvider
+@inject HttpClient HttpClient
 @inject ILocalStorageService LocalStorage
 
 <PageTitle>Index</PageTitle>
@@ -13,11 +12,16 @@
         <MudItem xs ="12">
             <MudPaper Class="pa-4">
                 <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-                    <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!" />
-                    <MudTextField T="string" Label="Password" @ref="pwField1"
-                                  InputType="InputType.Password"
-                                  Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
-                                  RequiredError="Password is required!" />
+                    <MudTextField T="string" Label="Username" @bind-Value="Username" Required="true" 
+                        RequiredError="User name is required!" />
+                    <MudTextField T="string" Label="Password" @bind-Value="Password"
+                                  InputType="InputType.Password" Required="true"
+                                  RequiredError="Password is required!"/>
+                    <MudRadioGroup @bind-SelectedOption="@SelectedOption">
+                        <MudRadio Option="@("Farmer")" Color="Color.Primary">Farmer</MudRadio>
+                        <MudRadio Option="@("Employee")" Color="Color.Secondary">Employee</MudRadio>
+                    </MudRadioGroup>
+
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(()=>HandleLogin())">Login</MudButton>
 
                 </MudForm>
@@ -29,42 +33,21 @@
 
 
 @code {
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string SelectedOption { get; set; }
     bool success;
+    string errorText;
     string[] errors = { };
     MudTextField<string> pwField1;
     MudForm form;
-    UserLoginDto user = new UserLoginDto();
-
+    UserLoginDto userLoginDto = UserLoginDto.Instance;
     async Task HandleLogin()
     {
-        var result = await Http.PostAsJsonAsync("api/auth", user);
-        var token = await result.Content.ReadAsStringAsync();
-        Console.WriteLine(token);
-        await LocalStorage.SetItemAsync("token", token);
-        await AuthStateProvider.GetAuthenticationStateAsync();
-    }
-    private IEnumerable<string> PasswordStrength(string pw)
-    {
-        if (string.IsNullOrWhiteSpace(pw))
-        {
-            yield return "Password is required!";
-            yield break;
-        }
-        if (pw.Length < 8)
-            yield return "Password must be at least of length 8";
-        if (!Regex.IsMatch(pw, @"[A-Z]"))
-            yield return "Password must contain at least one capital letter";
-        if (!Regex.IsMatch(pw, @"[a-z]"))
-            yield return "Password must contain at least one lowercase letter";
-        if (!Regex.IsMatch(pw, @"[0-9]"))
-            yield return "Password must contain at least one digit";
-    }
-
-    private string PasswordMatch(string arg)
-    {
-        if (pwField1.Value != arg)
-            return "Passwords don't match";
-        return null;
+        userLoginDto.Role = SelectedOption;
+        userLoginDto.Username = Username;
+        userLoginDto.Password = Password;
+        var x = await HttpClient.GetFromJsonAsync<UserLoginDto>($"api/auth/{SelectedOption}/{Username}/{Password}");
     }
 
 }

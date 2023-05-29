@@ -1,5 +1,4 @@
 global using Blazored.LocalStorage;
-global using Microsoft.AspNetCore.Components.Authorization;
 using FarmCentral.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -14,8 +13,6 @@ builder.Services.AddScoped<MudThemeProvider>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddMudServices();
 

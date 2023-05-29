@@ -1,17 +1,20 @@
 ﻿@inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
-@inject AuthenticationStateProvider AuthStateProvider
+@using FarmCentral.Shared;
 
-<AuthorizeView>
-    <Authorized>
-        <button @onclick="Logout" class="btn btn-danger">Logout</button>
-    </Authorized>
-    <NotAuthorized>
-        <button @onclick="Login" class="btn btn-primary">Login</button>
-    </NotAuthorized>
-</AuthorizeView>
+
+@if (userLoginDto.Role == String.Empty)
+{
+    <button @onclick="Login" class="btn btn-primary">Login</button>
+}
+else
+{
+    <button @onclick="Logout" class="btn btn-danger">Logout</button>
+}
+
 
 @code {
+    UserLoginDto userLoginDto = UserLoginDto.Instance;
     void Login()
     {
         NavigationManager.NavigateTo("login");
@@ -19,8 +22,6 @@
 
     async Task Logout()
     {
-        await LocalStorage.RemoveItemAsync("token");
-        await AuthStateProvider.GetAuthenticationStateAsync();
     }
 
 }

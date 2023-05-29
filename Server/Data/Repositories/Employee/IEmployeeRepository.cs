@@ -8,5 +8,6 @@
         Task AddEmployee(Shared.Models.Employee employee);
         Task UpdateEmployee(Shared.Models.Employee employee);
         Task DeleteEmployee(int employeeId);
+        Task<Shared.Models.Employee> LoginEmployee(string username, string password);
     }
 }

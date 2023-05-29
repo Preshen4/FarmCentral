@@ -7,5 +7,6 @@
         Task AddFarmer(Shared.Models.Farmer farmer);
         Task UpdateFarmer(Shared.Models.Farmer farmer);
         Task DeleteFarmer(int farmerId);
+        Task<Shared.Models.Farmer> LoginFarmer(string username, string password);
     }
 }
