@@ -2,6 +2,8 @@
 
 Title: POE Part 2 ST10083954
 
+NOTE : Famrer Login: username: johnwick password: password1 Employee Login: username: robertd password: password11 
+
 Version: 1.0.0
 
 Table of Contents: 
