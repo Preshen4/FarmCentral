@@ -4,6 +4,11 @@ Title: POE Part 2 ST10083954
 
 NOTE : Famrer Login: username: johnwick password: password1 Employee Login: username: robertd password: password11 
 
+How feedback was implemented: 
+1) Add prepopulated data
+2) Added a readme file
+3) Added comments and code attribution
+
 Version: 1.0.0
 
 Table of Contents: 
