@@ -2,6 +2,7 @@
 {
     public interface IStockRepository
     {
+        // Stock Repository Interface with methods to be implemented
         Task<List<Shared.Models.Stock>> GetStocks();
         Task<Shared.Models.Stock> GetStock(int stockId);
         Task AddStock(Shared.Models.Stock stock);

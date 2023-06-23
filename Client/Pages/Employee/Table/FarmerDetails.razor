@@ -53,7 +53,7 @@ else
     // List of all farmers 
     protected List<Farmer> farmers = new();
     private string searchString1 = "";
-
+    // Opens a popup dialog to edit a farmer
     private void EditDialog(int id)
     {
         DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
@@ -61,12 +61,13 @@ else
         parameters.Add("FarmerId", id);
         DialogService.Show<EmployeeAddFarmer>("Edit Employee",parameters, dialogOptions);        
     }
+    // Opens a popup dialog to add a farmer
     private void AddDialog()
     {
         DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
         DialogService.Show<EmployeeAddFarmer>("Add Employee", dialogOptions);
     }
-
+    // Opens a popup dialog to delete a farmer
     private void DeleteDialog(int id)
     {
         DialogOptions dialogOptions = new DialogOptions() { FullWidth = true };
@@ -81,7 +82,7 @@ else
 
     }
     private bool FilterFunc1(Farmer farmer) => FilterFunc(farmer, searchString1);
-
+    // Filter function to filter the farmers based on the search string
     private bool FilterFunc(Farmer farmer, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString))

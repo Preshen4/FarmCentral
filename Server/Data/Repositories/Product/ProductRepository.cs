@@ -9,7 +9,7 @@ namespace FarmCentral.Server.Data.Repositories.Product
         {
             this._dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-
+        // Adds a new product to the database
         public async Task AddProduct(Shared.Models.Product product)
         {
             try
@@ -25,7 +25,7 @@ namespace FarmCentral.Server.Data.Repositories.Product
                 _dbContext.SaveChanges();
             }
         }
-
+        // Deletes a product from the database
         public async Task DeleteProduct(int productId)
         {
             try
@@ -51,7 +51,7 @@ namespace FarmCentral.Server.Data.Repositories.Product
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets a product from the database
         public async Task<Shared.Models.Product> GetProduct(int productId)
         {
             try
@@ -76,7 +76,7 @@ namespace FarmCentral.Server.Data.Repositories.Product
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets all products from the database
         public async Task<List<Shared.Models.Product>> GetProducts()
         {
             try
@@ -94,7 +94,7 @@ namespace FarmCentral.Server.Data.Repositories.Product
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets all products from the database by farmer
         public async Task<List<Shared.Models.Product>> GetProductsByFarmer(int farmerId)
         {
 
@@ -137,7 +137,7 @@ namespace FarmCentral.Server.Data.Repositories.Product
                 _dbContext.SaveChanges();
             }
         }
-
+        // Updates a product in the database
         public async Task UpdateProduct(Shared.Models.Product product)
         {
             try

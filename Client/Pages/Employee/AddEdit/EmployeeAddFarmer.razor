@@ -61,6 +61,7 @@
 
     protected async Task SaveFarmer()
     {
+        // if the farmerId is not 0 then we are editing an existing farmer else we are adding a new farmer
         if (FarmerId !=0)
         {
             await HttpClient.PutAsJsonAsync("api/Farmer", farmer);

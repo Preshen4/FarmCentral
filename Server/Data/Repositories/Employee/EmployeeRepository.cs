@@ -9,7 +9,7 @@ namespace FarmCentral.Server.Data.Repositories.Employee
         {
             this._dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-
+        // Adds a new employee to the database
         public async Task AddEmployee(Shared.Models.Employee employee)
         {
             try
@@ -25,7 +25,7 @@ namespace FarmCentral.Server.Data.Repositories.Employee
                 _dbContext.SaveChanges();
             }
         }
-
+        // Deletes an employee from the database
         public async Task DeleteEmployee(int employeeId)
         {
             try
@@ -51,7 +51,7 @@ namespace FarmCentral.Server.Data.Repositories.Employee
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets an employee from the database
         public async Task<Shared.Models.Employee> GetEmployee(int employeeId)
         {
             try
@@ -76,7 +76,7 @@ namespace FarmCentral.Server.Data.Repositories.Employee
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets all employees from the database
         public async Task<List<Shared.Models.Employee>> GetEmployees()
         {
             try
@@ -94,7 +94,7 @@ namespace FarmCentral.Server.Data.Repositories.Employee
                 _dbContext.SaveChanges();
             }
         }
-
+        // Logs an employee into the system
         public async Task<Shared.Models.Employee> LoginEmployee(string username, string password)
         {
             try
@@ -119,7 +119,7 @@ namespace FarmCentral.Server.Data.Repositories.Employee
                 _dbContext.SaveChanges();
             }
         }
-
+        // Updates an employee in the database
         public async Task UpdateEmployee(Shared.Models.Employee employee)
         {
             try

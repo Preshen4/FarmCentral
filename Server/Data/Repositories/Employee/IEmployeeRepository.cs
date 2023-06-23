@@ -3,6 +3,7 @@
 {
     public interface IEmployeeRepository
     {
+        // Employee Repository Interface with methods to be implemented
         Task<List<Shared.Models.Employee>> GetEmployees();
         Task<Shared.Models.Employee> GetEmployee(int employeeId);
         Task AddEmployee(Shared.Models.Employee employee);

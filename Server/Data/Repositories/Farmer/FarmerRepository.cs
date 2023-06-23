@@ -9,7 +9,7 @@ namespace FarmCentral.Server.Data.Repositories.Farmer
         {
             this._dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-
+        // Adds a new Farmer to the database
         public async Task AddFarmer(Shared.Models.Farmer farmer)
         {
             try
@@ -25,7 +25,7 @@ namespace FarmCentral.Server.Data.Repositories.Farmer
                 _dbContext.SaveChanges();
             }
         }
-
+        // Deletes a Farmer from the database
         public async Task DeleteFarmer(int farmerId)
         {
             try
@@ -51,7 +51,7 @@ namespace FarmCentral.Server.Data.Repositories.Farmer
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets a Farmer from the database
         public async Task<Shared.Models.Farmer> GetFarmer(int farmerId)
         {
             try
@@ -76,7 +76,7 @@ namespace FarmCentral.Server.Data.Repositories.Farmer
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets all Farmers from the database
         public async Task<List<Shared.Models.Farmer>> GetFarmers()
         {
             try
@@ -94,7 +94,7 @@ namespace FarmCentral.Server.Data.Repositories.Farmer
                 _dbContext.SaveChanges();
             }
         }
-
+        // Logs a Farmer into the database
         public async Task<Shared.Models.Farmer> LoginFarmer(string username, string password)
         {
             try
@@ -120,7 +120,7 @@ namespace FarmCentral.Server.Data.Repositories.Farmer
             }
 
         }
-
+        // Updates a Farmer in the database
         public async Task UpdateFarmer(Shared.Models.Farmer farmer)
         {
             try

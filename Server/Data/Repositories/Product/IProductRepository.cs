@@ -2,6 +2,7 @@
 {
     public interface IProductRepository
     {
+        // Product Repository Interface with methods to be implemented
         Task<List<Shared.Models.Product>> GetProducts();
         Task<Shared.Models.Product> GetProduct(int productId);
         Task AddProduct(Shared.Models.Product product);

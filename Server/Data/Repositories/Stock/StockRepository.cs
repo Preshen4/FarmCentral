@@ -11,7 +11,7 @@ namespace FarmCentral.Server.Data.Repositories.Stock
         {
             this._dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-
+        // Adds a new stock to the database
         public async Task AddStock(Shared.Models.Stock stock)
         {
             try
@@ -27,7 +27,7 @@ namespace FarmCentral.Server.Data.Repositories.Stock
                 _dbContext.SaveChanges();
             }
         }
-
+        // Deletes a stock from the database
         public async Task DeleteStock(int stockId)
         {
             try
@@ -53,7 +53,7 @@ namespace FarmCentral.Server.Data.Repositories.Stock
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets a stock from the database
         public async Task<Shared.Models.Stock> GetStock(int stockId)
         {
             try
@@ -78,10 +78,10 @@ namespace FarmCentral.Server.Data.Repositories.Stock
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets all stocks from the database
         public async Task<List<Shared.Models.Stock>> GetStocks()
         {
-            // ChatGPT
+            // ChatGPT - 2021-03-21 - This is a LINQ query that uses the Include method to retrieve the related data
             try
             {
                 var stock = _dbContext.Stocks.ToList();
@@ -136,12 +136,12 @@ namespace FarmCentral.Server.Data.Repositories.Stock
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets all stocks from the database by farmer
         public async Task<List<Shared.Models.Stock>> GetStocksByFarmer(int farmerId)
         {
             throw new NotImplementedException();
         }
-
+        // Gets all stocks from the database by product
         public async Task UpdateStock(Shared.Models.Stock stock)
         {
             try

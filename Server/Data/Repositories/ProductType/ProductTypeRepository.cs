@@ -9,7 +9,7 @@ namespace FarmCentral.Server.Data.Repositories.ProductType
         {
             this._dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-
+        // Adds a new product type to the database
         public async Task AddProductType(Shared.Models.ProductType productType)
         {
             try
@@ -25,7 +25,7 @@ namespace FarmCentral.Server.Data.Repositories.ProductType
                 _dbContext.SaveChanges();
             }
         }
-
+        // Deletes a product type from the database
         public async Task DeleteProductType(int productTypeId)
         {
             try
@@ -51,7 +51,7 @@ namespace FarmCentral.Server.Data.Repositories.ProductType
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets a product type from the database
         public async Task<Shared.Models.ProductType> GetProductType(int productTypeId)
         {
             try
@@ -76,7 +76,7 @@ namespace FarmCentral.Server.Data.Repositories.ProductType
                 _dbContext.SaveChanges();
             }
         }
-
+        // Gets all product types from the database
         public async Task<List<Shared.Models.ProductType>> GetProductTypes()
         {
             try
@@ -94,7 +94,7 @@ namespace FarmCentral.Server.Data.Repositories.ProductType
                 _dbContext.SaveChanges();
             }
         }
-
+        // Updates a product type in the database
         public async Task UpdateProductType(Shared.Models.ProductType productType)
         {
             try
